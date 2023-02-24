@@ -14,24 +14,30 @@ mongoose.connect('mongodb+srv://Neliiel:Tonic0690@cluster0.uiohzjr.mongodb.net/?
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
 app.use((req, res, next) => {
-    console.log('Requête reçue');
-    next();
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  next();
 });
 
-app.use((req, res, next) => {
-    res.status(201);
-    next();
-});
-
-app.use((req, res, next) => {
-    res.json({ message: 'Votre requête a bien été reçue !'});
-    next();
-});
-
-app.use((req, res, next) => {
-    console.log('Réponse envoyé avec succès !');
-    next();
-});
+app.get('/api/sauces', (req, res, next) => {
+  const sauces = [
+    {
+      userId: {String},
+      name: {String},
+      manufacturer: {String},
+      description: {String},
+      mainPepper: {String},
+      imageUrl: {String},
+      heat: {Number},
+      likes: {Number},
+      dislikes: {Number},
+      //usersLiked: {String},
+      //usersDisliked: {String}
+    },
+  ];
+  res.status(200).json(sauces);
+})
 
 app.use('/api/auth', userRoutes);
 
