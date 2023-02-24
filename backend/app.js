@@ -35,23 +35,10 @@ app.post('/api/sauces', (req, res, next) => {
 });
 
 app.get('/api/sauces', (req, res, next) => {
-  const sauces = [
-    {
-      userId: {String},
-      name: {String},
-      manufacturer: {String},
-      description: {String},
-      mainPepper: {String},
-      imageUrl: {String},
-      heat: {Number},
-      likes: {Number},
-      dislikes: {Number},
-      //usersLiked: {String},
-      //usersDisliked: {String}
-    },
-  ];
-  res.status(200).json(sauces);
-})
+  Thing.find()
+    .then(things => res.status(200).json(things))
+    .catch(error => res.status(400).json({ error }));
+});
 
 app.use('/api/auth', userRoutes);
 
