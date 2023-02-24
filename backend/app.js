@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
+const userRoutes = require('./routes/user');
+
 const app = express();
 
 mongoose.set('strictQuery', false);
@@ -30,6 +32,8 @@ app.use((req, res, next) => {
     console.log('Réponse envoyé avec succès !');
     next();
 });
+
+app.use('/api/auth', userRoutes);
 
 
 
