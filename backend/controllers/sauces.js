@@ -22,8 +22,8 @@ exports.modifySauce = (req, res, next) => {
     } : {...req.body};
 
     Sauce.findOne({_id: req.params.id})
-        .then((thing) => {
-            if (thing.userId != req.auth.userId) {
+        .then((sauce) => {
+            if (sauce.userId != req.auth.userId) {
                 res.status(401).json({ message : 'Non-autorisé' });
             } else {
                 Sauce.updateOne({ _id: req.params.id}, {...sauceObject, _id: req.params.id})
@@ -38,8 +38,8 @@ exports.modifySauce = (req, res, next) => {
 // Suppression d'une sauce
 exports.deleteSauce = (req, res, next) => {
     Sauce.findOne({_id: req.params.id})
-    .then(thing => {
-        if(thing.userId != req.auth.userId) {
+    .then(sauce => {
+        if(sauce.userId != req.auth.userId) {
             res.status(401).json({ message : 'Non-autorisé'});
         } else {
             const filename = thing.imageUrl.split('/images/')[1];
@@ -56,14 +56,14 @@ exports.deleteSauce = (req, res, next) => {
 // Appel d'une sauce
 exports.getOneSauce = (req, res, next) => {
     Sauce.findOne({ _id: req.params.id})
-        .then(thing => res.status(200).json(thing))
+        .then(sauce => res.status(200).json(sauce))
         .catch(error => res.status(404).json({ error }));
 };
 
 // Appel de toutes les sauces
 exports.getAllSauces = (req, res, next) => {
     Sauce.find()
-        .then(things => res.status(200).json(things))
+        .then(sauces => res.status(200).json(sauces))
         .catch(error => res.status(400).json({ error }));
 };
 
@@ -79,7 +79,7 @@ exports.likeSauce = (req, res, next) => {
             }
         )
 
-        .then(thing => res.status(200).json({ massage : 'Sauce LIKE'}))
+        .then(() => res.status(200).json({message: 'Sauce LIKE!'}))
         .catch(error => res.status(500).json({ error }));
     }
 
@@ -92,7 +92,7 @@ exports.likeSauce = (req, res, next) => {
                 $push: {usersDisliked: req.body.userId},
             }
         )
-        .then(thing => res.status(200).json({ massage : 'Sauce DISLIKE'}))
+        .then(() => res.status(200).json({message: 'Sauce DISLIKE!'}))
         .catch(error => res.status(500).json({ error }));
     }
 };
