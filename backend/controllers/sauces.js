@@ -75,33 +75,26 @@ exports.getAllSauces = (req, res, next) => {
 // Mise en place du like/dislike
 exports.likeSauce = (req, res, next) => {
     
-    
-
     // L'utilisateur change d'avis
     if(req.body.like === 0) {
         Sauce.findOne({ _id: req.params.id })
             .then ((sauce) => {
                 // L'utilisateur annule son like
-                if (sauce.usersLiked.includes(req.body.userId)) {
-                    Sauce.updateOne (
-                        { _id: req.params.id },
-                        { $pull: { usersLiked: req.body.userId}, $inc: { likes: -1}}
-                    )
-                    .then(() => res.status(200).json({message: 'Sauce DISLIKE!'}))
-                    .catch(error => res.status(500).json({ error }));
-                }
+                if(sauce.usersLiked.includes(req.body.userId)) {
+                    const incKey = req.body.like === 1? "likes" : "dislikes"
+                    const usersKey= req.body.like === 1? "usersLiked" : "usersDisliked"
 
-                // L'utilisateur annule son dislike
-                else if (sauce.usersDisliked.includes(req.body.userId)) {
                     Sauce.updateOne (
-                        { _id: req.params.id },
-                        { $pull: { usersDisliked: req.body.userId}, $inc: { dislikes: -1}}
+                        {_id: req.params.id},
+                        {
+                            $pull: {[usersKey]: req.body.userId},
+                            $inc: {[incKey]: -1}
+                        }
                     )
-                    .then(() => res.status(200).json({message: 'Sauce LIKE!'}))
+                    .then(() => res.status(200).json({message: `Sauce ${req.body.like === 1?"LIKE":"DISLIKE"}`}))
                     .catch(error => res.status(500).json({ error }));
-                }
-            })
-            .catch(error => res.status(401).json({ error }));
+                }   
+            })        
     } else {
         const incKey = req.body.like === 1?"likes":"dislikes"
         const usersKey = req.body.like === 1?"usersLiked":"usersDisliked"
